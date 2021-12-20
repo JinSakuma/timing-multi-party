@@ -1,5 +1,0 @@
-param: "paramです！"
-defaults:
-  - exp_conf: default
-  - model_conf: satg
-
