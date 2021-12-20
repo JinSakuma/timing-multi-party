@@ -1,0 +1,31 @@
+exp_name: "tgn"
+model_type: "tgn"
+input: "/mnt/aoni04/jsakuma/data/sota/"
+output: "./logs/exp"
+lang: "ctc"
+mode: 6
+epoch: 50
+seed: 0
+gpuid: 0
+batch_size: 1
+max_frame: 60
+threshold1: 0.8
+threshold2: 0.4
+threshold_u: 0.5
+rate: 1.0
+input_size: 128
+input_img_size: 65
+input_p_size: 64
+# ctc: 64, bert: 128 word2vec: 300 julius: 45
+hidden_size: 64
+resume: True
+hang: False
+dense_flag: False
+elan_flag: False
+target_type: False
+wandb_flg: False
+wandb_project: 'timing-multi-party'
+wandb_entity: 'jsakuma'
+
+swt_weight: "/mnt/aoni04/katayama/share/SPEC/epoch_20_acc0.887_loss0.266_ut_train.pth"
+
