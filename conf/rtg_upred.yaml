@@ -1,5 +1,5 @@
 exp_name: "rtg"
-model_type: "rtg_hang_over"
+model_type: "rtg_hang_over_upred"
 input: "/mnt/aoni04/jsakuma/data/sota/"
 output: "./logs/exp"
 lang: "ctc"

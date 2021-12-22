@@ -68,7 +68,7 @@ class RTG(nn.Module):
         # 無音の長さ特徴量の作成
         silence_list = []        
         
-        for uu in u:
+        for uu in up:
             if uu >= 0.5:
                 silence += 1
                 silence_list.append([silence])
