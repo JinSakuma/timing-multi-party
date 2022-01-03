@@ -164,7 +164,7 @@ class TGN(nn.Module):
 
             up_hat = up_max if up_ >= self.thres_up else up_
 #             up_hat = up_
-    
+
             alpha_ = up_hat * a_pre + (1-up_hat) * a_[i]
             y_ = alpha_ * up_hat + (1-alpha_) * y_pre
             if up_hat < self.thres_up:
@@ -210,13 +210,15 @@ class TGN(nn.Module):
                     l_e = 0
 
                 # 正解のタイミングがない場合は閾値を超えていれば最適化
-                elif y_pre >= self.thres1:
+#                 elif y_pre >= self.thres1:
+                else: 
                     if i-start_frame < self.max_frame:
-                        l_e = self.criterion(y_pre, label[i-1]*0+self.thres2[i-start_frame])
+                        if y_pre >= self.thres2[i-start_frame]:
+                            l_e = self.criterion(y_pre, label[i-1]*0+self.thres2[i-start_frame])
                     else:
-                        l_e = self.criterion(y_pre, label[i-1]*0+self.thres2[self.max_frame-1])
+                        if y_pre >= self.thres2[self.max_frame-1]:
+                            l_e = self.criterion(y_pre, label[i-1]*0+self.thres2[self.max_frame-1])
                         
-#                     l_e = self.criterion(y_pre, label[i-1]*0+0.4)
                     cnt += 1
                     loss += l_e * self.r
                     l_c = 0

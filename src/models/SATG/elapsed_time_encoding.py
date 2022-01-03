@@ -23,7 +23,13 @@ class ElapsedTimeEncoding(nn.Module):
         for i, s in enumerate(silence): 
             s = int(np.round(s))
             if s>0:
-                tmp[:, i, :] = self.pe[:, s:s+1, :]
+                try:
+                    tmp[:, i, :] = self.pe[:, s:s+1, :]
+                except:
+                    print(tmp[:, i, :].shape)
+                    print(self.pe[:, s:s+1, :].shape)
+                    print(s)
+                    print(aaaa)
             
         device = src.device
         src = src + tmp.to(device)

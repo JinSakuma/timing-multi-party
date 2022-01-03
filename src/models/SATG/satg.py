@@ -88,7 +88,7 @@ class SATG(nn.Module):
         
         silence_list2 = []
         scnt = 0
-        et = self.et
+        et = 0 #self.et
         u_pre = 0
         for uu in up:
             et += uu

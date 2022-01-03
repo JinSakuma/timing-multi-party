@@ -105,7 +105,7 @@ class RTG(nn.Module):
                 if sl<3 or sl>40:
                     flg=False
                     
-            if (u_>=0.5 and flg) or u_ < 0.5:
+            if u_>=0.5 and flg: #) or u_ < 0.5: # 非発話区間のみで最適化
                 y_list1.append(y_.unsqueeze(0))
                 lbl_list1.append(lbl.unsqueeze(0))
                 

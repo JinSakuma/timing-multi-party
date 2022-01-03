@@ -26,7 +26,7 @@ def train(net, mode, dataloaders_dict,
         if mode == 2 or mode >= 4:
             net.reset_lang()
 
-        for inputs in batch:
+        for inputs in batch[0]:
             output_dict = net(inputs, lbl_pre, silence_pre, phase='train')
 
             lbl_pre = output_dict['lbl_pre']
@@ -71,7 +71,7 @@ def val(net, mode, dataloaders_dict,
             if mode == 2 or mode >= 4:
                 net.reset_lang()
 
-            for inputs in batch:
+            for inputs in batch[0]:
                 output_dict = net(inputs, lbl_pre, silence_pre, phase='val')
                 
                 lbl_pre = output_dict['lbl_pre']

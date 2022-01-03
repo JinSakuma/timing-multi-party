@@ -27,7 +27,7 @@ def train(net, mode, dataloaders_dict,
         if mode == 2 or mode >= 4:
             net.reset_lang()
 
-        for inputs in batch:
+        for inputs in batch[0]:
             output_dict = net(inputs, y_pre, a_pre)
             y_pre = output_dict['y'][-1]
             a_pre = output_dict['alpha'][-1]
@@ -72,7 +72,7 @@ def val(net, mode, dataloaders_dict,
             if mode == 2 or mode >= 4:
                 net.reset_lang()
 
-            for inputs in batch:
+            for inputs in batch[0]:
                 output_dict = net(inputs, y_pre, a_pre, phase='val')
                 y_pre = output_dict['y'][-1]
                 a_pre = output_dict['alpha'][-1]

@@ -60,7 +60,7 @@ def setup(PATH, file_id, dense_flag=False, elan_flag=False):
 
 def preprocess(feat, target_type, model_type='rtg', phase='train', lang='ctc'):
 
-    entries = []
+    data = []
     threshold = 1.0
     for i in range(len(feat['feature'])):
 
@@ -127,11 +127,9 @@ def preprocess(feat, target_type, model_type='rtg', phase='train', lang='ctc'):
 
     #     assert len(start_list)==len(end_list)-1, "nums of start and end are not matched"
 
-        start_list, end_list, len(start_list), len(end_list)
-
-        for i in range(len(end_list)-1):
-            start = end_list[i]+1
-            end = end_list[i+1]
+        for j in range(len(end_list)-1):
+            start = end_list[j]+1
+            end = end_list[j+1]
             y_ = y[start:end]
             action_ = action[start:end]
             action_c_ = action_c[start:end]
@@ -156,7 +154,7 @@ def preprocess(feat, target_type, model_type='rtg', phase='train', lang='ctc'):
             if offset>60: #発話末から3秒以上経っての発話は対象外
                 continue
 
-            if end-endpoint>60: #発話末から3秒間を対象とする
+            if end-(start+endpoint)>60: #発話末から3秒間を対象とする
                 end = start + endpoint + 60
 
             y_ = y[start:end]
@@ -180,28 +178,59 @@ def preprocess(feat, target_type, model_type='rtg', phase='train', lang='ctc'):
             
             if voiceA_.shape[0]>600: # 長すぎる(30秒以上)ものを削除 (ほとんどないはず)
                 continue
+                
+            uends = np.where(u_[1:]-u_[:-1] == -1)[0]
+            pre=0
+            entries = []
+            for ue in uends:
+                if y_[ue]>0 or pre >= ue-2:
+                    continue
+                
+                ue = ue+2
+                entry = {
+                    "y": y_[pre:ue],
+                    "action": action_[pre:ue],
+                    "u": u_[pre:ue],
+                    "u_pred": u_pred_[pre:ue],
+                    "voiceA": voiceA_[pre:ue],
+                    "voiceB": voiceB_[pre:ue],
+                    "img": img_[pre:ue],
+                    "phonemeA": phonemeA_[pre:ue],
+                    "phonemeB": phonemeB_[pre:ue],
+                    "wordA": wordA_[pre:ue],
+                    "wordB": wordB_[pre:ue],
+                    "wordU": wordU_[pre:ue],
+                    "endpoint": endpoint,
+                    "offset": offset,
+                }
+                pre = ue+1
 
-            entry = {
-                "y": y_,
-                "action": action_,
-                "u": u_,
-                "u_pred": u_pred_,
-                "voiceA": voiceA_,
-                "voiceB": voiceB_,
-                "img": img_,
-                "phonemeA": phonemeA_,
-                "phonemeB": phonemeB_,
-                "wordA": wordA_,
-                "wordB": wordB_,
-                "wordU": wordU_,
-                "endpoint": endpoint,
-                "offset": offset,
-            }
+                entries.append(entry)
+                
+            if len(y_[pre:])>1:
+                entry = {
+                        "y": y_[pre:],
+                        "action": action_[pre:],
+                        "u": u_[pre:],
+                        "u_pred": u_pred_[pre:],
+                        "voiceA": voiceA_[pre:],
+                        "voiceB": voiceB_[pre:],
+                        "img": img_[pre:],
+                        "phonemeA": phonemeA_[pre:],
+                        "phonemeB": phonemeB_[pre:],
+                        "wordA": wordA_[pre:],
+                        "wordB": wordB_[pre:],
+                        "wordU": wordU_[pre:],
+                        "endpoint": endpoint,
+                        "offset": offset,
+                    }
 
-
-            entries.append(entry)
+                entries.append(entry)
             
-    return entries
+            if len(entries)>0:
+                data.append(entries)
+            
+    return data
         
 
 def get_dataloader(args):
